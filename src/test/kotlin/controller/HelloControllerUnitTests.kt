@@ -5,14 +5,17 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.ui.Model
 import org.springframework.ui.ExtendedModelMap
+import es.unizar.webeng.hello.HistoryService
 
 class HelloControllerUnitTests {
+    private lateinit var historyService: HistoryService
     private lateinit var controller: HelloController
     private lateinit var model: Model
     
     @BeforeEach
     fun setup() {
-        controller = HelloController("Test Message")
+        historyService = HistoryService()
+        controller = HelloController(historyService, "Test Message")
         model = ExtendedModelMap()
     }
     
@@ -23,6 +26,7 @@ class HelloControllerUnitTests {
         assertThat(view).isEqualTo("welcome")
         assertThat(model.getAttribute("message")).isEqualTo("Test Message")
         assertThat(model.getAttribute("name")).isEqualTo("")
+        assertThat(model.getAttribute("logs")).isNotNull()
     }
     
     @Test
@@ -32,6 +36,7 @@ class HelloControllerUnitTests {
         assertThat(view).isEqualTo("welcome")
         assertThat(model.getAttribute("message")).isEqualTo("Hello, Developer!")
         assertThat(model.getAttribute("name")).isEqualTo("Developer")
+        assertThat(model.getAttribute("logs")).isNotNull()
     }
     
     @Test

@@ -1,35 +1,54 @@
 # Lab 1 Git Race -- Project Report
 
-This note uses the same disclosure fields as the group-project **AI use (10%)** slice. Lab 1 is still **limited**: assistive GenAI only — not a full or substantial generated solution. The project will later expect agents plus `AGENTS.md` and one skill; you do **not** need those here.
-
-Do not invent a percentage of “AI vs original” lines. Empty or fake disclosure fails this lab.
-
 ## What I specified
 
-[The increment you decided to add *before* generating or pasting code. How you would know it works.]
+Before writing any code, I thoroughly analyzed the stater repository structure
+to understand the existing funcionality in order to decide what I wanted to implement.
+
+I decided to implement a new feature that allows users to view the greetings history.
+Some of the key specifications for this feature include:
+- The history should be displayed in a table format, with each row representing a greeting.
+- Non-blanck greetings should be displayed in the table, while blank greetings should be ignored.
+- The main view must dinamically display the recent request log using Thymeleaf.
 
 ## What I changed
 
-[Files and behaviour. Not a restatement of the starter README.]
+- **Created files:**
+  - `src/main/kotlin/service/HistoryService.kt`: Service class managing the in-memory log entries.
+  - `src/main/kotlin/controller/HistoryApiController.kt`: REST controller serving history data as JSON at `/api/history`.
+  - `src/test/kotlin/controller/HistoryApiControllerTest.kt`: Unit tests for the history REST API.
+  - `src/test/kotlin/service/HistoryServiceTest.kt`: Unit tests verifying thread safety and state handling of `HistoryService`.
+
+- **Modified files:**
+  - `src/main/kotlin/controller/HelloController.kt`: Injected `HistoryService` to store logs on form POST submissions and supply existing logs to the Thymeleaf model on GET requests.
+  - `src/main/resources/templates/welcome.html`: Integrated a responsive Thymeleaf card displaying history logs conditionally and providing an API link.
+  - `src/test/kotlin/controller/HelloControllerUnitTests.kt` & `HelloControllerMVCTests.kt`: Updated tests to include dependencies for `HistoryService`.
+  - `src/test/kotlin/IntegrationTest.kt`: End-to-end testing to verify form submissions register in history and persist across navigation.
 
 ## Technical decisions
 
-[Choices you own: API shape, tests, data, what you rejected.]
+- **Form POST & PRG Pattern:** The starter originally used a single `GET` endpoint for greetings. I added a `POST /` endpoint to handle submissions when updating history, combined with the Post/Redirect/Get (PRG) pattern to prevent duplicate log entries upon refreshing the browser.
+- **Thread Safety:** I rejected the Gemini's suggestion of a standard non-thread-safe `ArrayList`. Instead, I chose a thread-safe synchronized collection to prevent data corruption under concurrent HTTP requests so that the system could be able to grow and scale in an hypothetical situation.
 
 ## How I verified
 
-[Commands (`./gradlew check`), what failed first, what you fixed. You remain accountable for correctness.]
+I run the full check and build using Gradle:
+./gradlew check
+./gradlew bootRun
+
+**Failures**: Upon the first execution of './gradlew check', several syntax errors occurred due to my lack of familiarity with Kotlin syntax. After correcting these errors and updateing existing test all chacks passed successfully.
+
+**Manual Testing**: Tested form submissions manually at http://localhost:8080/, verifying that new names appeared in the Thymeleaf history section, and verified JSON output at http://localhost:8080/api/history.
 
 ## AI disclosure
 
-Fill **either** the list **or** the no-AI line.
+- **Tools / skills:** Gemini (Google)
+- **Purpose:** Assisting with Thymeleaf HTML layout for the history component and reviewing Spring Boot/Kotlin controller interaction.
+- **Representative prompts:**
+  - "How to display a list of strings in Thymeleaf?"
+  - "Is it necessary to add an independent controller for the history API or would you integrate it into the existing controller?"
+- **Affected files/sections:** src/main/resources/templates/welcome.html (history card section) and HelloController.kt.
+- **Validation steps:** Executed `./gradlew check` to verify unit and integration tests, fixed Kotlin syntax errors, and manually verified UI and JSON API endpoints via `./gradlew bootRun`.
+- **Citations:** None. No external code or documentation pages were directly adapted.
+- **Human-reviewed:** I reviewed all generated code carefully. I rejected the suggested standard Array/List structure in favor of a thread-safe concurrent collection, ensuring that HTTP request handlers can safely mutate state under potential concurrent load.
 
-- **Tools / skills:** …
-- **Purpose:** …
-- **Representative prompts:** … (or appendix)
-- **Affected files/sections:** …
-- **Validation steps:** …
-- **Citations:** … (external snippets you adapted)
-- **Human-reviewed:** what you checked, changed, or rejected
-
-Or: **No AI assistance** was used for this lab.

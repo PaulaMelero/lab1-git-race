@@ -18,10 +18,6 @@
                 <img src="/assets/logo.svg" alt="Universidad Zaragoza Logo" class="me-2 navbar-logo">
                 Modern Web App
             </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/actuator/health" target="_blank">Health</a>
-                <a class="nav-link" href="/api/hello">API</a>
-            </div>
         </div>
     </nav>
 
@@ -34,25 +30,70 @@
                         <h1 class="display-4 fw-bold text-primary mb-4">Welcome to Modern Web App</h1>
                         <p class="lead mb-4" th:text="${message}">Hello student.</p>
                         
+                        <!-- Form to enter the name -->
+                        <div class="card mb-4 shadow-sm text-start">
+                            <div class="card-body">
+                                <form action="/" method="post" class="row g-3 align-items-center">
+                                    <div class="col-sm-8">
+                                        <label for="webName" class="visually-hidden">Tu Nombre</label>
+                                        <input type="text" 
+                                               id="webName" 
+                                               name="name" 
+                                               class="form-control" 
+                                               placeholder="Escribe tu nombre aquí..." 
+                                               th:value="${name}">
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button type="submit" class="btn btn-primary w-100">Saludar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- History Section-->
+                        <div class="card mb-5 shadow-sm text-start">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Historial Reciente de Peticiones</h5>
+                            </div>
+                            <div class="card-body">
+                                <div th:if="${#lists.isEmpty(logs)}" class="text-muted">
+                                    No hay registros guardados en el historial aún.
+                                </div>
+                                <ul class="list-group list-group-flush" th:unless="${#lists.isEmpty(logs)}">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center" th:each="log : ${logs}">
+                                        <div>
+                                            <span th:text="${log.message}"></span>
+                                        </div>
+                                        <small class="text-muted" th:text="${#temporals.format(log.timestamp, 'HH:mm:ss')}"></small>
+                                    </li>
+                                </ul>
+                                <div class="mt-3">
+                                    <a href="/api/history" class="btn btn-sm btn-outline-primary" target="_blank">
+                                        Ver historial en formato JSON (API) &rarr;
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- HTTP Debug Section -->
                         <div class="row mt-4">
                             <div class="col-12">
                                 <div class="card">
-                                    <div class="card-header bg-info text-white">
+                                    <div class="card-header bg-info text-white text-start">
                                         <h5 class="card-title mb-0">
-                                            <i class="bi bi-code-slash"></i> Interactive HTTP Testing & Debug
+                                            Interactive HTTP Testing & Debug
                                             <small class="float-end">Client-Side Educational Tool</small>
                                         </h5>
                                     </div>
                                     <div class="card-body">
-                                        <p class="text-muted mb-3">
+                                        <p class="text-muted mb-3 text-start">
                                             This section demonstrates HTTP requests and responses using JavaScript Fetch API. 
                                             All interactions below will show real HTTP communication in action!
                                         </p>
                                         
                                         <!-- Interactive HTTP Testing -->
                                         <div class="row mb-4">
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="card">
                                                     <div class="card-body">
                                                         <h6 class="card-title">Web Page Greeting</h6>
@@ -64,19 +105,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                         <h6 class="card-title">API Endpoints</h6>
-                                                        <p class="small text-muted">Test the REST API with JSON response</p>
-                                                        <div class="mb-3">
-                                                            <input type="text" id="apiName" class="form-control" placeholder="Enter name (optional)" value="Student">
-                                                        </div>
-                                                        <button id="testApiBtn" class="btn btn-success w-100">Test /api/hello</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
+                                           
+                                            <div class="col-md-6">
                                                 <div class="card">
                                                     <div class="card-body">
                                                         <h6 class="card-title">Health Check</h6>
@@ -111,24 +141,11 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="mt-3">
-                                            <div class="alert alert-info text-start">
-                                                <h6 class="alert-heading text-start">
-                                                    <i class="bi bi-lightbulb"></i> Learning Notes:
-                                                </h6>
-                                                <ul class="mb-0 text-start">
-                                                    <li><strong>Fetch API:</strong> Modern JavaScript way to make HTTP requests</li>
-                                                    <li><strong>Promise-based:</strong> Asynchronous operations using .then() and async/await</li>
-                                                    <li><strong>JSON Response:</strong> API endpoints return structured data</li>
-                                                    <li><strong>Status Codes:</strong> 200 = success, 404 = not found, 500 = server error</li>
-                                                    <li><strong>Headers:</strong> Metadata sent with every request and response</li>
-                                                </ul>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

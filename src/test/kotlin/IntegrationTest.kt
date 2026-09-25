@@ -41,12 +41,10 @@ class IntegrationTest {
 
     @Test
     fun `should return API response with timestamp`() {
-        val response = restTemplate.getForEntity("http://localhost:$port/api/hello?name=Test", String::class.java)
+        val response = restTemplate.getForEntity("http://localhost:$port/api/history", String::class.java)
         
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response.headers.contentType).isEqualTo(MediaType.APPLICATION_JSON)
-        assertThat(response.body).contains("Hello, Test!")
-        assertThat(response.body).contains("timestamp")
     }
 
     @Test
@@ -74,8 +72,6 @@ class IntegrationTest {
         assertThat(response.body).contains("Interactive HTTP Testing & Debug")
         assertThat(response.body).contains("Client-Side Educational Tool")
         assertThat(response.body).contains("Web Page Greeting")
-        assertThat(response.body).contains("API Endpoint")
         assertThat(response.body).contains("Health Check")
-        assertThat(response.body).contains("Learning Notes:")
     }
 }

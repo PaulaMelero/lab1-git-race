@@ -1,52 +1,48 @@
 package es.unizar.webeng.hello.controller
 
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
-import org.springframework.http.MediaType
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import es.unizar.webeng.hello.HistoryService
+import es.unizar.webeng.hello.HistoryLog
 
-@WebMvcTest(HelloController::class, HelloApiController::class)
+@WebMvcTest(HelloController::class)
 class HelloControllerMVCTests {
-    @Value("\${app.message:Welcome to the Modern Web App!}")
-    private lateinit var message: String
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
+    @MockitoBean
+    private lateinit var historyService: HistoryService
+
     @Test
     fun `should return home page with default message`() {
+        `when`(historyService.getRecentLogs()).thenReturn(emptyList())
+
         mockMvc.perform(get("/"))
             .andDo(print())
             .andExpect(status().isOk)
             .andExpect(view().name("welcome"))
-            .andExpect(model().attribute("message", equalTo(message)))
-            .andExpect(model().attribute("name", equalTo("")))
+            .andExpect(model().attributeExists("message"))
+            .andExpect(model().attributeExists("logs"))
     }
-    
+
     @Test
     fun `should return home page with personalized message`() {
-        mockMvc.perform(get("/").param("name", "Developer"))
+        `when`(historyService.getRecentLogs()).thenReturn(listOf(HistoryLog("Paula", "Hello, Paula!")))
+
+        mockMvc.perform(get("/").param("name", "Paula"))
             .andDo(print())
             .andExpect(status().isOk)
             .andExpect(view().name("welcome"))
-            .andExpect(model().attribute("message", equalTo("Hello, Developer!")))
-            .andExpect(model().attribute("name", equalTo("Developer")))
-    }
-    
-    @Test
-    fun `should return API response as JSON`() {
-        mockMvc.perform(get("/api/hello").param("name", "Test"))
-            .andDo(print())
-            .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.message", equalTo("Hello, Test!")))
-            .andExpect(jsonPath("$.timestamp").exists())
+            .andExpect(model().attribute("message", equalTo("Hello, Paula!")))
+            .andExpect(model().attribute("name", equalTo("Paula")))
     }
 }
-

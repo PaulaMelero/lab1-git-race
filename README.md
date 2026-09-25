@@ -18,6 +18,7 @@ cd lab1-git-race
 - UI: <http://localhost:8080>
 - JSON: <http://localhost:8080/api/hello>
 - Health: <http://localhost:8080/actuator/health>
+- JSON History: http://localhost:8080/api/history
 
 ```bash
 ./gradlew test
@@ -28,10 +29,14 @@ cd lab1-git-race
 
 ```
 src/main/kotlin/HelloWorld.kt          # class Application
+src/main/kotlin/service/HistoryService.kt
 src/main/kotlin/controller/HelloController.kt
+src/main/kotlin/controller/HistoryApiController.kt
 src/main/resources/templates/welcome.html
 src/test/kotlin/controller/HelloControllerUnitTests.kt
 src/test/kotlin/controller/HelloControllerMVCTests.kt
+src/tst/kotlin/controller/HistoryApiControllerTest.kt
+src/test/kotlin/controller/HistoryServiceTest.kt
 src/test/kotlin/IntegrationTest.kt
 ```
 
