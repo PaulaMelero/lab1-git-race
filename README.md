@@ -4,6 +4,10 @@ Individual starter for Web Engineering 2026–27. Stack matches the group projec
 
 The assignment, AI rules, and deadline are in [`docs/GUIDE.md`](docs/GUIDE.md). Fill [`REPORT.md`](REPORT.md) before you submit. Delivery is the Moodle zip only (`docs/GUIDE.md`).
 
+## Increment
+
+Added an greeting request history feature. It records non-blank greeting interactions (name and timestamp), displays recent entries dynamically on the web UI via Thymeleaf, and exposes the history data through a dedicated REST API endpoint at `/api/history`.
+
 ## Run
 
 Java 25 is required (`./gradlew` uses the wrapper). GitHub Codespaces is optional (`docs/GUIDE.md`). Clone this course repository; you do not fork it to submit.
